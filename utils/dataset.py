@@ -59,7 +59,8 @@ class Sido(Dataset):
             lines = f.readlines()
             pbar = tqdm.tqdm(total=len(lines))
             for line in lines:
-                x = np.asarray([float(int(x)) for x in line.strip().split(" ")])
+                x = np.asarray([float(int(x))
+                                for x in line.strip().split(" ")])
                 X.append(x)
                 pbar.update(1)
             pbar.close()
