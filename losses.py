@@ -37,7 +37,7 @@ class l1_regularizer():
 
     def grad(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        if torch.dist(w, torch.zeros(w.size()), p=1) >= 0:
+        if torch.dist(w, torch.zeros(w.size().to(device)), p=1) >= 0:
             return torch.mul(torch.ones(w.size()).to(device),
                              0.5*coeff['l1']).to(device)
         else:
@@ -52,7 +52,8 @@ class l2_regularizer():
                                     coeff['l2']))
 
     def grad(w, coeff):
-        return torch.mul(w, 2*coeff['l2'])
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        return torch.mul(w, 2*coeff['l2']).to(device)
 
 
 class elastic_net_regularizer():
