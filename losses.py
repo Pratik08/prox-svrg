@@ -1,6 +1,5 @@
 import torch
 
-
 class mse():
     def compute(X, y, w):
         return torch.mean(torch.sub(torch.sum(torch.mul(X, w), dim=1), y)**2)
@@ -23,10 +22,10 @@ class log_loss():
 
 class prox_loss():
     def compute(X, y, w):
-        return torch.dist(w, X)**2
+        return torch.dist(w, X.float())**2
 
     def grad(X, y, w):
-        return torch.mul(torch.dist(w, X), 2.)
+        return torch.mul(torch.dist(w, X.float()), 2)
 
 
 class l1_regularizer():
