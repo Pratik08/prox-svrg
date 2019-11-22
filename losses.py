@@ -1,5 +1,6 @@
 import torch
 
+
 class mse():
     def compute(X, y, w):
         return torch.mean(torch.sub(torch.sum(torch.mul(X, w), dim=1), y)**2)
@@ -15,7 +16,7 @@ class log_loss():
                           torch.sum(torch.mul(X, w), dim=1)))))
 
     def grad(X, y, w):
-        return torch.mean(torch.div(-torch.mul(X.t(), y),
+        return torch.mean(torch.div(-torch.mul(X.t().double(), y),
                           (1 + torch.exp(y * torch.sum(torch.mul(X, w))))),
                           dim=1)
 
