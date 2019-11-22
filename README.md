@@ -15,9 +15,9 @@ Implementation of the [Proximal Stochastic Variance Reduced Gradients Algorithm]
   sh ./utils/download_dataset.sh
   ```
 - Then, execute the following command to install all the dependencies:
-```sh
-sh ./install.sh
-```
+  ```sh
+  sh ./install.sh
+  ```
 
 # Test scripts
 ---------------

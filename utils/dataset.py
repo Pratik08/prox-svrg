@@ -6,8 +6,10 @@ import numpy as np
 
 class Dataset:
     def __init__(self, X, y, verbose=True):
-        self.X = X
-        self.y = y
+        self.device = torch.device("cuda" if torch.cuda.is_available()
+                                   else "cpu")
+        self.X = X.to(self.device)
+        self.y = y.to(self.device)
 
         if verbose:
             print("Number of rows in X: {}".format(self.X.size(0)))
