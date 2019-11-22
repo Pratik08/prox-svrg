@@ -1,6 +1,6 @@
 #! /bin/bash
 
-mkdir -p ../data/rcv1 ./data/covertype ./data/sido0
+mkdir -p ../data/rcv1 ../data/covertype ../data/sido0
 echo 'Created directories'
 
 # rcv1
@@ -8,7 +8,7 @@ wget -q -O '../data/rcv1/rcv1_train.binary.bz2' 'https://www.csie.ntu.edu.tw/~cj
 echo 'Downloaded rcv1'
 
 # covertype
-wget -q -O '../data/covertype/covtype.libsvm.binary.bz2' 'https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary/covtype.libsvm.binary.bz2'
+wget -q -O '../data/covertype/covtype.libsvm.binary.bz2' 'https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary/covtype.libsvm.binary.scale.bz2'
 echo 'Downloaded covertype'
 
 # sido0

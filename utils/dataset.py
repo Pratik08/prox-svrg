@@ -47,6 +47,38 @@ class Rcv1(Dataset):
         super().__init__(X, y, verbose)
 
 
+class Covertype(Dataset):
+    def __init__(self, path='../data/covertype', verbose=True):
+        if verbose:
+            print("Loading Covertype dataset...")
+
+        # initalize inputs and targets
+        X = []
+        y = []
+        # datapoints are $dim$ dimensional
+        dim = 54
+
+        X_path = os.path.join(path, 'covtype.libsvm.binary')
+        with open(X_path, 'r') as f:
+            lines = f.readlines()
+            pbar = tqdm.tqdm(total=len(lines))
+            for line in lines:
+                x_feat = line.rstrip().split(' ')
+                x = np.zeros(dim)
+                for feat in x_feat[1:]:
+                    x[int(feat.split(':')[0])-1] = float(feat.split(':')[1])
+                X.append(x)
+                y_label = int(x_feat[0])
+                if y_label == 2:
+                    y_label = -1
+                y.append(y_label)
+                pbar.update(1)
+            pbar.close()
+        X = torch.from_numpy(np.asarray(X))
+        y = torch.from_numpy(np.asarray(y))
+        super().__init__(X, y, verbose)
+
+
 class Sido(Dataset):
     def __init__(self, path='../data/sido0', verbose=True):
         if verbose:
