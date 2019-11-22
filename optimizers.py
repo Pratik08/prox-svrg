@@ -16,9 +16,15 @@ class Optimizer:
 	def __init__(self):
 		self.stats = Stats()
 
-	def optimize(self, X, y, hp, loss, regularizer, prox = None):
-		# Gradient Descent
-		return None
+	def optimize(self, X, y, hp, loss, regularizer=None, prox = None):
+
+		# Gradient 
+		w = torch.randn(X.size(1)) * 0.01
+		for _ in range(hp['max_iter']):
+			grad = loss.grad(X,y,w)
+			w = w - hp['lr'] * grad
+			self.stats.compute(w, loss.compute(X,y,w))
+		return w
 
 
 
