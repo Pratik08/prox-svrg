@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+
 def plot_num_non_zeros(stats):
 
     nnzs = []
