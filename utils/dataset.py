@@ -44,7 +44,7 @@ class Rcv1(Dataset):
             pbar.close()
         X = torch.from_numpy(np.asarray(X))
         y = torch.from_numpy(np.asarray(y))
-        super().__init__(X, y)
+        super().__init__(X, y, verbose)
 
 
 class Sido(Dataset):
@@ -78,4 +78,4 @@ class Sido(Dataset):
                 pbar.update(1)
             pbar.close()
         y = torch.from_numpy(np.asarray(y))
-        super().__init__(X, y)
+        super().__init__(X, y, verbose)
