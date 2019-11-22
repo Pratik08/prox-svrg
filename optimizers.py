@@ -32,26 +32,28 @@ class Optimizer:
 	Hyperparamters: 
 		s - number of stages
 		m - number of iterations per stage
-
+		eta - learning rate
 '''
 class ProxSVRGOptimizer(Optimizer):
-	def __init__(self, data, hp, objectiveFunction, regularizer, objectiveGradient, regularizerGradient):
-		super().__init__(data, hp, objectiveFunction, regularizer, objectiveGradient, regularizerGradient)
-		# 
+	def __init__(self):
+		super().__init__()
 
-	def run_stage(self, ):
+		
 
 	def optimize(self, X, y, hp, loss, regularizer, prox):
-		numParams = X.size(1)
-		numExamples = X.size(0)
-		eta = hp['eta']
-		m = hp['m']
-		epsilon = 
-		weights = torch.from_numpy(np.zeros(numParams))
-		wBar = deepcopy(weights)
-		for i in range(self.hp['stages']):
-			loss.compute(X,y,wBar)
-			w_0 = deepcopy(weights)
-			q = 
-			self.run_stage()
+		num_examples, num_params = X.size(0), X.size(1)
+		eta, m, num_stages = hp['eta'], hp['m'], hp['s']
+		prox_optimizer = Optimizer()
+		w_bar = torch.from_numpy(np.zeros(numParams))
+		for i in range(s):
+			v_bar = loss.grad(X, y, wBar)
+			weight_iterates = deepcopy(wBar)
+			for k in range(1,m + 1):
+				q = random.randint(0,numExamples-1)
+				v_k = torch.div((loss.grad(X[k],y[k],weight_iterates[k-1]) - loss.grad(X[k],y[k],wBar)),n) + vBar
+				prox_input = torch.sub(weight_iterates[k-1], torch.mul(v_k, eta))
+				prox_optimizer.optimize()
+				weight_iterates = torch.stack((weight_iterates, next_weight))
+				
+			wBar = torch.mean(weight_iterates, dim = 1)
 
