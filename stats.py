@@ -1,5 +1,3 @@
-import torch
-
 class Stats:
 
     def __init__(self):
