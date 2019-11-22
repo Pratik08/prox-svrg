@@ -1,5 +1,10 @@
 class Stats:
-
+    """
+    This class is used for computing statistics
+    such as number on non zeros, objective gap, 
+    and effective passes. Only compute method 
+    is the public method. 
+    """
     def __init__(self):
         self.num_non_zeros = []
         self.objective_gap = []
@@ -16,6 +21,10 @@ class Stats:
         self.effective_passes.append(self.current_iteration)
 
     def compute(self, w, loss):
+        """
+        w: tensor of weights [1 x d]
+        loss: float
+        """
         self._compute_num_non_zeros(w)
         self._compute_objective_gap(loss)
         self._compute_effective_passes()
