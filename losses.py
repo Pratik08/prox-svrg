@@ -42,3 +42,10 @@ class l2_regularizer():
 
     def grad(w, coeff):
         return torch.mul(w, 2*coeff)
+class elastic_net_regularizer():
+    def compute(w, coeff1,coeff2):
+        return torch.sum(l1_regularizer.compute(w,coeff1),l2_regularizer.compute(w,coeff2))
+
+    def grad(w,coeff1, coeff2):
+        return torch.sum(l1_regularizer.grad(w,coeff1),l2_regularizer.grad(w,coeff2))
+        
