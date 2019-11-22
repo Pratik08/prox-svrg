@@ -1,5 +1,5 @@
 # prox-svrg
-Implementation of the Proximal Stochastic Variance Reduced Gradients Algorithm.
+Implementation of the [Proximal Stochastic Variance Reduced Gradients Algorithm](https://arxiv.org/pdf/1403.4699.pdf).
 
 # Dataset Details
 -------------------
@@ -11,9 +11,13 @@ Implementation of the Proximal Stochastic Variance Reduced Gradients Algorithm.
 # Setup instructions
 ----------------------
 - From the root of the directory, execute the following:
-  ```bash
-  bash ./utils/download_dataset.sh
+  ```sh
+  sh ./utils/download_dataset.sh
   ```
+- Then, execute the following command to install all the dependencies:
+```sh
+sh ./install.sh
+```
 
 # Test scripts
 ---------------
