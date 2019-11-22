@@ -22,39 +22,37 @@ class log_loss():
 
 
 class prox_loss():
-    def compute(C, w, regularizer):
-        return torch.sum(torch.pow(torch.dist(w, C), 2),
-                         regularizer.compute(w))
+    def compute(X, y, w):
+        return torch.dist(w, X)**2
 
-    def grad(C, w, regularizer):
-        return torch.mean(torch.sum(torch.mul(torch.sub(w, C), 2),
-                          regularizer.grad))
+    def grad(X, y, w):
+        return torch.mul(torch.dist(w, X), 2)
 
 
 class l1_regularizer():
     def compute(w, coeff):
-        return torch.mul(torch.dist(w, torch.zeros(w.size(), p=1), 0.5*coeff))
+        return torch.mul(torch.dist(w, torch.zeros(w.size()), p=1), 0.5*coeff['l1'])
 
     def grad(w, coeff):
-        if torch.dist(w, torch.zeros(w.size(), p=1)) >= 0:
-            return torch.mul(torch.ones(w.size()), 0.5*coeff)
+        if torch.dist(w, torch.zeros(w.size()), p=1) >= 0:
+            return torch.mul(torch.ones(w.size()), 0.5*coeff['l1'])
         else:
-            return torch.mul(torch.ones(w.size()), -0.5*coeff)
+            return torch.mul(torch.ones(w.size()), -0.5*coeff['l1'])
 
 
 class l2_regularizer():
     def compute(w, coeff):
-        return torch.mul(torch.dist(w, torch.zeros(w.size(), p=2), coeff))
+        return torch.mul(torch.dist(w, torch.zeros(w.size(), p=2), coeff['l2']))
 
     def grad(w, coeff):
-        return torch.mul(w, 2*coeff)
+        return torch.mul(w, 2*coeff['l2'])
 
 
 class elastic_net_regularizer():
-    def compute(w, coeff1, coeff2):
-        return torch.sum(l1_regularizer.compute(w, coeff1),
-                         l2_regularizer.compute(w, coeff2))
+    def compute(w, coeff):
+        return torch.add(l1_regularizer.compute(w, coeff),
+                         l2_regularizer.compute(w, coeff))
 
-    def grad(w, coeff1, coeff2):
-        return torch.sum(l1_regularizer.grad(w, coeff1),
-                         l2_regularizer.grad(w, coeff2))
+    def grad(w, coeff):
+        return torch.add(l1_regularizer.grad(w, coeff),
+                         l2_regularizer.grad(w, coeff))

@@ -2,16 +2,21 @@ import torch
 import sys
 sys.path.append('../')
 
-from losses import mse
-from optimizers import Optimizer
-from utils.dataset import Sido
+from losses import *
+from optimizers import *
+from utils.dataset import Sido,Covertype
 
-sido = Sido()
-X = sido.X
-y = sido.y
+covertype = Covertype()
+X = covertype.X
+y = covertype.y
 
-optimizer = Optimizer()
+
+optimizer = ProxSVRGOptimizer()
 hp = dict()
-hp['max_iter'] = 5
-hp['lr'] = 1e-3
-optimizer.optimize(X,y,hp,mse)
+hp['max_iter'] = 100
+hp['lr'] = 1e-5
+hp['s'] = 10
+hp['m'] = 10000
+hp['eta'] = 1e-4
+hp['coeff'] = {'l1':0.0001, 'l2':0.0001}
+optimizer.optimize(X,y,hp,log_loss,elastic_net_regularizer,prox_loss)
