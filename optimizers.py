@@ -22,6 +22,8 @@ class Optimizer:
 		w = torch.randn(X.size(1)) * 0.01
 		for _ in range(hp['max_iter']):
 			grad = loss.grad(X,y,w)
+			if regularizer is not None:
+				grad += regularizer.grad(X,y,w)
 			w = w - hp['lr'] * grad
 			self.stats.compute(w, loss.compute(X,y,w))
 		return w
@@ -38,13 +40,12 @@ class ProxSVRGOptimizer(Optimizer):
 	def __init__(self):
 		super().__init__()
 
-		
 
 	def optimize(self, X, y, hp, loss, regularizer, prox):
 		num_examples, num_params = X.size(0), X.size(1)
 		eta, m, num_stages = hp['eta'], hp['m'], hp['s']
 		prox_optimizer = Optimizer()
-		w_bar = torch.from_numpy(np.zeros(numParams))
+		w_bar = torch.randn(num_params) * 0.01
 		for i in range(s):
 			v_bar = loss.grad(X, y, wBar)
 			weight_iterates = deepcopy(wBar)
@@ -52,7 +53,7 @@ class ProxSVRGOptimizer(Optimizer):
 				q = random.randint(0,numExamples-1)
 				v_k = torch.div((loss.grad(X[k],y[k],weight_iterates[k-1]) - loss.grad(X[k],y[k],wBar)),n) + vBar
 				prox_input = torch.sub(weight_iterates[k-1], torch.mul(v_k, eta))
-				prox_optimizer.optimize()
+				prox_optimizer.optimize(\)
 				weight_iterates = torch.stack((weight_iterates, next_weight))
 				
 			wBar = torch.mean(weight_iterates, dim = 1)
