@@ -16,8 +16,8 @@ class log_loss():
                           torch.sum(torch.mul(X, w), dim=1)))))
 
     def grad(X, y, w):
-        return torch.mean(torch.div(-torch.mul(X.t().double(), y),
-                          (1 + torch.exp(y * torch.sum(torch.mul(X, w))))),
+        return torch.mean(torch.div(-torch.mul(X.t(), y),
+                          (1. + torch.exp(y * torch.sum(torch.mul(X, w))))),
                           dim=1)
 
 
