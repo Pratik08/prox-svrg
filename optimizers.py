@@ -1,4 +1,6 @@
 from copy import deepcopy
+from stats import Stats
+
 '''
 	Base class with a Gradient Descent optimizer
 	optimize is a function which will be overriden by derived classes. 
@@ -12,7 +14,7 @@ from copy import deepcopy
 '''
 class Optimizer:
 	def __init__(self):
-		self.statistics = Statistics()
+		self.stats = Stats()
 
 	def optimize(self, X, y, hp, loss, regularizer, prox = None):
 		# Gradient Descent
