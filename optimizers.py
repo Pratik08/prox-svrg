@@ -67,9 +67,9 @@ class ProxSVRGOptimizer(Optimizer):
             w_itrs = torch.reshape(w_bar, (1, -1))
             for k in range(1, m + 1):
                 q = torch.randint(n_examples, (1, 1)).item()
-                p1 = loss.grad(torch.reshape(X[k], (1, -1)), y[k],
+                p1 = loss.grad(torch.reshape(X[q], (1, -1)), y[q],
                                w_itrs[k-1])
-                p2 = loss.grad(torch.reshape(X[k], (1, -1)), y[k], w_bar)
+                p2 = loss.grad(torch.reshape(X[q], (1, -1)), y[q], w_bar)
                 v_k = torch.add(torch.sub(p1, p2), v_bar)
                 prox_input = torch.sub(w_itrs[k-1],
                                        torch.mul(v_k, eta).double()).double()
