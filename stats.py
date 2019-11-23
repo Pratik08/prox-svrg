@@ -1,3 +1,7 @@
+import torch
+import matplotlib.pyplot as plt
+
+
 class Stats:
     """
     This class is used for computing statistics
@@ -12,7 +16,7 @@ class Stats:
         self.current_iteration = 0
 
     def _compute_num_non_zeros(self, w):
-        self.num_non_zeros.append(int((w != 0).int().sum().data.cpu().numpy()))
+        self.num_non_zeros.append(int((torch.abs(w) > 1e-2).int().sum().data.cpu().numpy()))
 
     def _compute_objective_gap(self, loss):
         self.objective_gap.append(loss)
@@ -29,3 +33,8 @@ class Stats:
         self._compute_objective_gap(loss)
         self._compute_effective_passes()
         self.current_iteration += 1
+
+    def plot(self):
+        plt.plot(self.num_non_zeros)
+        plt.show()
+        input()
