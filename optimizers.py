@@ -30,12 +30,13 @@ class Optimizer:
 
         if verbose:
             pbar = tqdm.tqdm(total=hp['max_iter'])
-        for _ in range(hp['max_iter']):
+        for i in range(hp['max_iter']):
             grad = loss.grad(X, y, w)
             if regularizer is not None:
                 grad = torch.add(grad, regularizer.grad(w, hp['coeff']))
             w = w - hp['lr'] * grad
             self.stats.compute(w, loss.compute(X, y, w))
+            # print("Stage: %d Loss: %f NNZs: %d" % (i, self.stats.objective_gap[-1],self.stats.num_non_zeros[-1]))
             if verbose:
                 pbar.update(1)
         if verbose:
