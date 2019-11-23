@@ -62,7 +62,7 @@ class ProxSVRGOptimizer(Optimizer):
         w_bar = 0.1 * torch.randn(n_params).double().to(self.device)
 
         pbar = tqdm.tqdm(total=(s*m))
-        for _ in range(s):
+        for i in range(s):
             v_bar = loss.grad(X, y, w_bar)
             w_itrs = torch.reshape(w_bar, (1, -1))
             for k in range(1, m + 1):
@@ -79,7 +79,8 @@ class ProxSVRGOptimizer(Optimizer):
                                     torch.reshape(nxt_w.double(), (1, -1))])
                 pbar.update(1)
             w_bar = torch.mean(w_itrs, dim=0)
-            self.stats.compute(w_itrs[k], loss.compute(X, y, w_itrs[k]))
+            self.stats.compute(w_bar, loss.compute(X, y, w_bar))
+            print("Stage: %d Loss: %f NNZs: %d" % (i, self.stats.objective_gap[-1],self.stats.num_non_zeros[-1]))
+
         pbar.close()
-        print(self.stats.objective_gap)
         return w_bar
