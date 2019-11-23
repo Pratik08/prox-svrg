@@ -59,7 +59,7 @@ class ProxSVRGOptimizer(Optimizer):
         eta, m, s = hp['eta'], hp['m'], hp['s']
         prox_optim = Optimizer()
 
-        w_bar = 0.1 * torch.randn(n_params).double().to(self.device)
+        w_bar = 0.01 * torch.randn(n_params).double().to(self.device)
 
         pbar = tqdm.tqdm(total=(s*m))
         for i in range(s):
@@ -73,8 +73,9 @@ class ProxSVRGOptimizer(Optimizer):
                 v_k = torch.add(torch.sub(p1, p2), v_bar)
                 prox_input = torch.sub(w_itrs[k-1],
                                        torch.mul(v_k, eta).double()).double()
-                nxt_w = prox_optim.optimize(torch.reshape(prox_input, (1, -1)),
-                                            0, hp, prox, regularizer)
+                # nxt_w = prox_optim.optimize(torch.reshape(prox_input, (1, -1)),
+                #                             0, hp, prox, regularizer)
+                nxt_w = prox_input
                 w_itrs = torch.cat([w_itrs,
                                     torch.reshape(nxt_w.double(), (1, -1))])
                 pbar.update(1)
@@ -84,3 +85,34 @@ class ProxSVRGOptimizer(Optimizer):
 
         pbar.close()
         return w_bar
+
+
+class ProxSAGOptimizer(Optimizer):
+    '''
+    Hyperparamters:
+    m - number of iterations
+    eta - learning rate
+    '''
+
+    def __init__(self):
+        super().__init__()
+
+    def optimize(self, X, y, hp, loss, regularizer, prox):
+    	n_examples, n_params = X.size(0), X.size(1)
+        d = torch.zeros(n_params).double().to(self.device)
+        prev_grads = torch.zeros((n_examples,n_params)).double().to(self.device)
+        prox_optim = Optimizer()
+		w = 0.01 * torch.randn(X.size(1)).to(self.device)
+        for k in range(hp['steps']):
+        	q = torch.randint(n_examples, (1, 1)).item() # Replace with sampling function (?)
+        	x_sample = torch.reshape(X[q],(1,-1)).double().to(self.device)
+        	y_sample = y[q]
+        	grad_sample = loss.grad(x_sample,y_sample,w)
+        	d = tf.add(tf.sub(d,prev_grads[q]),grad_sample)
+        	prev_grads[q] = grad_sample
+        	prox_input = torch.sub(w,torch.mul(,hp['eta']/n_examples))
+        	w = prox_optim.optimize(torch.reshape(prox_input, (1, -1)),
+                                            0, hp, prox, regularizer)
+                
+        return w
+
