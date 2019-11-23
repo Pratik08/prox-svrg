@@ -7,7 +7,7 @@ class mse():
 
     def grad(X, y, w):
         return torch.mean(torch.mul(torch.mul(2., torch.sub(torch.sum(
-                          torch.mul(X, w), dim=1), y)), X.t()))
+                          torch.mul(X, w), dim=1), y)), X.t()),axis=1)
 
 
 class log_loss():
@@ -23,10 +23,10 @@ class log_loss():
 
 class prox_loss():
     def compute(X, y, w):
-        return torch.dist(w, X.float())**2
+        return (y-w)**2
 
     def grad(X, y, w):
-        return torch.mul(torch.dist(w, X.float()), 2)
+        return 2*(w-y)
 
 
 class l1_regularizer():
@@ -53,7 +53,7 @@ class l2_regularizer():
 
     def grad(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        return torch.mul(w, 2*coeff['l2']).to(device)
+        return 2*coeff['l2']*w
 
 
 class elastic_net_regularizer():
