@@ -73,8 +73,8 @@ class ProxSVRGOptimizer(Optimizer):
                 v_k = torch.add(torch.sub(p1, p2), v_bar)
                 prox_input = torch.sub(w_itrs[k-1],
                                        torch.mul(v_k, eta).double()).double()
-                # nxt_w = prox_optim.optimize(torch.reshape(prox_input, (1, -1)),
-                #                             0, hp, prox, regularizer)
+                nxt_w = prox_optim.optimize(torch.reshape(prox_input, (1, -1)),
+                                            0, hp, prox, regularizer)
                 nxt_w = prox_input
                 w_itrs = torch.cat([w_itrs,
                                     torch.reshape(nxt_w.double(), (1, -1))])
