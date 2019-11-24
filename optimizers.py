@@ -46,19 +46,20 @@ class Optimizer:
                  verbose=False):
         # Gradient
         w = 0.01 * torch.randn(X.size(1)).to(self.device).double()
-        curr_loss = 0.0
-        prev_loss = 0.0
+        curr_loss = loss.grad(X, y, w)
+        prev_loss = loss.grad(X, y, w)
 
         if verbose:
             pbar = tqdm.tqdm(total=hp['max_iter'])
-        for i in range(hp['max_iter']):
+        # for i in range(hp['max_iter']):
+        while True:
             prev_loss = curr_loss
             grad = loss.grad(X, y, w)
             if regularizer is not None:
                 grad = torch.add(grad, regularizer.grad(w, hp['coeff']))
             w = (w - hp['lr'] * grad).double()
             curr_loss = loss.compute(X, y, w)
-            if (torch.mean(prev_loss - curr_loss) < 0.001):
+            if (torch.mean(abs(prev_loss - curr_loss)) < 0.001):
                 break
             self.stats.compute(w, loss.compute(X, y, w))
             # print("Stage: %d Loss: %f NNZs: %d" % (i, self.stats.objective_gap[-1],self.stats.num_non_zeros[-1]))
@@ -105,9 +106,9 @@ class ProxSVRGOptimizer(Optimizer):
                 p2 = loss.grad(torch.reshape(X[q], (1, -1)), y[q], w_bar)
                 v_k = p1 - p2 + v_bar
                 prox_input = w_itrs[k-1] - eta * v_k
-                nxt_w = self.prox_elastic_net(hp, prox_input).double().to(self.device)
-#                 nxt_w = prox_optim.optimize(torch.eye(n_params),
-#                                             prox_input, hp, prox, regularizer)
+                # nxt_w = self.prox_elastic_net(hp, prox_input).double().to(self.device)
+                nxt_w = prox_optim.optimize(torch.eye(n_params),
+                                            prox_input, hp, prox, regularizer)
                 # nxt_w = prox_input
                 w_itrs = torch.cat([w_itrs,
                                     torch.reshape(nxt_w, (1, -1))])
