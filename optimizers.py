@@ -29,11 +29,13 @@ class Optimizer:
         if l2_norm >= t:
             return torch.mul(w, 1-torch.div(t,l2_norm).double()).double()
         else:
-            return torch.zeros(w.size())
+            return (torch.zeros(w.size())).double()
 
     def prox_mapping_l1(self, hp, w):
         t = hp['coeff']['l1']
         p = torch.max(torch.abs(w)-t,torch.zeros(w.size()).double())
+        if w.sum().data[0] == 0:
+        	return (torch.zeros(w.size())).double()
         return p*torch.div(w,abs(w))
 
 
@@ -146,7 +148,7 @@ class ProxSAGOptimizer(Optimizer):
 			d = torch.add(torch.sub(d,prev_grads[q]),grad_sample)
 			prev_grads[q] = grad_sample
 			prox_input = torch.sub(w,torch.mul(d,hp['eta']/n_examples).double()).double()
-			w = self.prox_elastic_net(hp,prox_input.double())
+			w = self.prox_elastic_net(hp,prox_input.double()).double()
             # w = prox_optim.optimize(torch.eye(n_params),
             #                                 prox_input, hp, prox, regularizer).double()
 			# w = prox_input.clone()
@@ -174,16 +176,18 @@ class ProxSGOptimizer(Optimizer):
 		prox_optim = Optimizer()
 		w = 0.1 * torch.randn(X.size(1)).double().to(self.device)
 		pbar = tqdm.tqdm(total=(hp['m']))
+		eta = hp['eta']
 		for k in range(hp['m']+1):
-			if k % n_examples == 0:
+			if k % (n_examples/100) == 0:
 				l = loss_plus_regulalizer.compute(X,y,w,hp['coeff'],loss,regularizer)
 				self.stats.compute(w, l)
 				print("Stage: %d Loss: %f NNZs: %d" % (k / n_examples, self.stats.objective_gap[-1],self.stats.num_non_zeros[-1]))
+				eta /= 2
 			q = torch.randint(n_examples, (1, 1)).item() # Replace with sampling function (?)
 			x_sample = torch.reshape(X[q],(1,-1)).double().to(self.device)
 			y_sample = y[q]
 			grad_sample = loss.grad(x_sample,y_sample,w)
-			prox_input = torch.sub(w,torch.mul(grad_sample,hp['eta']).double()).double()
+			prox_input = torch.sub(w,torch.mul(grad_sample,eta).double()).double()
 			w = self.prox_elastic_net(hp,prox_input.double()).double()
             # w = prox_optim.optimize(torch.eye(n_params),
             #                                 prox_input, hp, prox, regularizer)
