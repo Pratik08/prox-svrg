@@ -16,7 +16,7 @@ print(X.size())
 y = torch.narrow(sido.y,dim=0,start=0,length=num_examples)
 num_examples = X.size(0)
 
-optimizer = ProxSAGOptimizer()
+optimizer = ProxSGOptimizer()
 hp = dict()
 hp['max_iter'] = 100
 hp['lr'] = 0.1

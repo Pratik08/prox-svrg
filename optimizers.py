@@ -38,8 +38,8 @@ class Optimizer:
 
 
     def prox_elastic_net(self, hp, w):
-        prox_l1 = self.prox_mapping_l1(hp,w)
-        return self.prox_mapping_l2(hp, prox_l1)
+        prox_l1 = self.prox_mapping_l1(hp,w.double())
+        return self.prox_mapping_l2(hp, prox_l1.double())
 
 
     def optimize(self, X, y, hp, loss, regularizer=None, prox=None,
@@ -172,7 +172,7 @@ class ProxSGOptimizer(Optimizer):
 		d = torch.zeros(n_params).double().to(self.device)
 		prev_grads = torch.zeros((n_examples,n_params)).double().to(self.device)
 		prox_optim = Optimizer()
-		w = 1 * torch.randn(X.size(1)).double().to(self.device)
+		w = 0.1 * torch.randn(X.size(1)).double().to(self.device)
 		pbar = tqdm.tqdm(total=(hp['m']))
 		for k in range(hp['m']+1):
 			if k % n_examples == 0:
@@ -184,7 +184,7 @@ class ProxSGOptimizer(Optimizer):
 			y_sample = y[q]
 			grad_sample = loss.grad(x_sample,y_sample,w)
 			prox_input = torch.sub(w,torch.mul(grad_sample,hp['eta']).double()).double()
-			w = self.prox_elastic_net(hp,prox_input.double())
+			w = self.prox_elastic_net(hp,prox_input.double()).double()
             # w = prox_optim.optimize(torch.eye(n_params),
             #                                 prox_input, hp, prox, regularizer)
 			# w = prox_input.clone()

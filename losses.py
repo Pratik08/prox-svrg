@@ -36,7 +36,7 @@ class prox_loss():
 class l1_regularizer():
     def compute(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        return torch.mul(torch.dist(w, torch.zeros(w.size()).double().to(device), p=1),
+        return torch.mul(torch.dist(w.double(), torch.zeros(w.size()).double().to(device), p=1),
                          coeff['l1']).to(device)
 
     def grad(w, coeff):
