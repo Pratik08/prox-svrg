@@ -33,27 +33,27 @@ class l1_regularizer():
     def compute(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         return torch.mul(torch.dist(w, torch.zeros(w.size()).double().to(device), p=1),
-                         0.5*coeff['l1']).to(device)
+                         coeff['l1']).to(device)
 
     def grad(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if torch.dist(w.double(), torch.zeros(w.size()).double().to(device), p=1) >= 0:
             return torch.mul(torch.ones(w.size()).to(device),
-                             0.5*coeff['l1']).to(device)
+                             coeff['l1']).to(device)
         else:
             return torch.mul(torch.ones(w.size()).to(device),
-                             -0.5*coeff['l1']).to(device)
+                             -coeff['l1']).to(device)
 
 
 class l2_regularizer():
     def compute(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         return torch.mul(torch.dist(w, torch.zeros(w.size()).double(), p=2).to(device),
-                                    coeff['l2'])
+                                    0.5*coeff['l2'])
 
     def grad(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        return 2*coeff['l2']*w
+        return coeff['l2']*w
 
 
 class elastic_net_regularizer():
