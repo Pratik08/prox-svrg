@@ -32,7 +32,7 @@ class prox_loss():
 class l1_regularizer():
     def compute(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        return torch.mul(torch.dist(w, torch.zeros(w.size()).to(device), p=1),
+        return torch.mul(torch.dist(w, torch.zeros(w.size()).double().to(device), p=1),
                          0.5*coeff['l1']).to(device)
 
     def grad(w, coeff):
@@ -48,8 +48,8 @@ class l1_regularizer():
 class l2_regularizer():
     def compute(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        return torch.mul(torch.dist(w, torch.zeros(w.size(), p=2).to(device),
-                                    coeff['l2']))
+        return torch.mul(torch.dist(w, torch.zeros(w.size()).double(), p=2).to(device),
+                                    coeff['l2'])
 
     def grad(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -64,3 +64,13 @@ class elastic_net_regularizer():
     def grad(w, coeff):
         return torch.add(l1_regularizer.grad(w, coeff),
                          l2_regularizer.grad(w, coeff))
+
+class loss_plus_regulalizer():
+    def compute(X, y, w, coeff, loss, regularizer):
+        if regularizer is not None:
+            return loss.compute(X,y,w) + regularizer.compute(w,coeff)
+        return loss.compute(X,y,w)
+    def grad(X, y, w, coeff, loss, regularizer):
+        if regularizer is not None:
+            return loss.grad(X,y,w) + regularizer.grad(w,coeff)
+        return loss.grad(X,y,w)

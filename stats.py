@@ -34,7 +34,18 @@ class Stats:
         self._compute_effective_passes()
         self.current_iteration += 1
 
-    def plot(self):
+    def plot(self,title = ""):
         plt.plot(self.num_non_zeros)
-        plt.show()
-        input()
+        plt.xlabel("Effective Passes")
+        plt.ylabel("NNZs")
+        plt.title(title+" NNZs")
+        plt.xticks(range(len(self.num_non_zeros)))
+        plt.savefig(title+"_NNZs.png")
+        plt.clf()
+        plt.plot(self.objective_gap)
+        plt.xlabel("Effective Passes")
+        plt.ylabel("Objective Loss")
+        plt.title(title+" Loss")
+        plt.xticks(range(len(self.num_non_zeros)))
+        plt.savefig(title+"_Loss.png")
+        plt.clf()
