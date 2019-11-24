@@ -7,26 +7,28 @@ class mse():
 
     def grad(X, y, w):
         return torch.mean(torch.mul(torch.mul(2., torch.sub(torch.sum(
-                          torch.mul(X, w), dim=1), y)), X.t()))
+                          torch.mul(X, w), dim=1), y)), X.t()), axis=1)
 
 
 class log_loss():
     def compute(X, y, w):
-        return torch.mean(torch.log(1. + torch.exp(torch.mul(y,
+        return torch.mean(torch.log(1. + torch.exp(-1. * torch.mul(y,
                           torch.sum(torch.mul(X, w), dim=1)))))
 
     def grad(X, y, w):
-        return torch.mean(torch.div(-torch.mul(X.t(), y.double()),
-                          (1. + torch.exp(y.double() * torch.sum(torch.mul(X,
-                           w.double()))))), dim=1)
+        y_hat = torch.sum(torch.mul(X, w), axis=1)
+        t1 = torch.div(torch.exp(-1. * torch.mul(y, y_hat)), 1. + torch.exp(-1. * torch.mul(y, y_hat)))
+        t2 = torch.mul(-1. * y.repeat(1, X.size(1)).reshape(X.size(1), y.size(0)), X.t())
+        w_ret = torch.div(torch.mul(t2, t1).sum(axis=1), X.size(0))
+        return w_ret
 
 
 class prox_loss():
     def compute(X, y, w):
-        return torch.dist(w, X.float())**2
+        return 0.5 * torch.dist(w, X.float())**2
 
     def grad(X, y, w):
-        return torch.mul(torch.dist(w, X.float()), 2)
+        return torch.dist(w, X.float())
 
 
 class l1_regularizer():
