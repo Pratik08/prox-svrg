@@ -92,7 +92,7 @@ class Optimizer:
 class ProxSVRGOptimizer(Optimizer):
     '''
     Performs SVRG optimization
-    
+
     Hyperparamters:
     s - number of stages
     m - number of iterations per stage
@@ -146,7 +146,7 @@ class ProxSVRGOptimizer(Optimizer):
 class ProxSAGOptimizer(Optimizer):
 	'''
     Performs Proximal SAG optimization.
-    
+
 	Hyperparamters:
 	m - number of iterations
 	eta - learning rate
@@ -190,7 +190,7 @@ class ProxSAGOptimizer(Optimizer):
 class ProxSGOptimizer(Optimizer):
 	'''
     Performs Proximal SG optimization.
-    
+
 	Hyperparamters:
 	m - number of iterations
 	eta - learning rate

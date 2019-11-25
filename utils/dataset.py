@@ -1,3 +1,9 @@
+'''
+Authors: Pratik Dubal, Shashwat Verma and Saurabh Sharma.
+
+All the code is vectorized and cuda enabled.
+'''
+
 import os
 import tqdm
 import torch
