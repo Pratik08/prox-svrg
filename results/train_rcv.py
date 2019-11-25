@@ -15,8 +15,8 @@ from utils.dataset import Rcv1
 
 ##################################
 # Rcv1 dataset
-num_features = 100
-num_examples = 50
+num_features = 1000
+num_examples = 5000
 dset = Rcv1()
 
 # Choosing subset of dataset

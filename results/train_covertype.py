@@ -16,7 +16,7 @@ from utils.dataset import Covertype
 ##################################
 # covertype dataset
 num_features = 54
-num_examples = 50
+num_examples = 5000
 dset = Covertype()
 
 # Choosing subset of dataset

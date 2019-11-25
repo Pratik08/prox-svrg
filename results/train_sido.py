@@ -16,7 +16,7 @@ from utils.dataset import Sido
 ##################################
 # Sido dataset
 num_features = 100
-num_examples = 50
+num_examples = 5000
 sido = Sido()
 
 # Choosing subset of dataset
@@ -32,7 +32,7 @@ hp['max_iter'] = 100
 hp['lr'] = 0.1
 hp['s'] = 10
 hp['m'] = num_examples*20
-hp['eta'] = 1e-2
+hp['eta'] = 0.1
 hp['coeff'] = {'l1': 1e-4, 'l2': 1e-4}
 optimizer.optimize(X, y, hp, log_loss, elastic_net_regularizer, prox_loss, dataset="Sido")
 with open('sido_gd_nnz.pkl', 'wb') as f:
@@ -51,7 +51,7 @@ hp['max_iter'] = 100
 hp['lr'] = 0.1
 hp['s'] = 10
 hp['m'] = num_examples*20
-hp['eta'] = 1e-2
+hp['eta'] = 0.1
 hp['coeff'] = {'l1':1e-4, 'l2':1e-4}
 optimizer.optimize(X, y, hp, log_loss, elastic_net_regularizer, prox_loss, dataset="Sido")
 with open('sido_proxsg_nnz.pkl', 'wb') as f:
@@ -70,7 +70,7 @@ hp['max_iter'] = 100
 hp['lr'] = 0.1
 hp['s'] = 10
 hp['m'] = num_examples*20
-hp['eta'] = 1e-2
+hp['eta'] = 0.1
 hp['coeff'] = {'l1':1e-4, 'l2':1e-4}
 optimizer.optimize(X, y, hp, log_loss, elastic_net_regularizer, prox_loss, dataset="Sido")
 with open('sido_proxsvrg_nnz.pkl', 'wb') as f:
@@ -89,7 +89,7 @@ hp['max_iter'] = 100
 hp['lr'] = 0.1
 hp['s'] = 10
 hp['m'] = num_examples*20
-hp['eta'] = 1e-2
+hp['eta'] = 0.1
 hp['coeff'] = {'l1':1e-4, 'l2':1e-4}
 optimizer.optimize(X, y, hp, log_loss, elastic_net_regularizer, prox_loss, dataset="Sido")
 with open('sido_proxsag_nnz.pkl', 'wb') as f:
