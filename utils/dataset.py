@@ -5,6 +5,11 @@ import numpy as np
 
 
 class Dataset:
+    '''
+    Base dataset class.
+    Maps inputs to X
+    Maps labels to y
+    '''
     def __init__(self, X, y, verbose=True):
         self.device = torch.device("cuda" if torch.cuda.is_available()
                                    else "cpu")

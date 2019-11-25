@@ -1,6 +1,17 @@
+'''
+Authors: Pratik Dubal, Shashwat Verma and Saurabh Sharma.
+
+All the code is vectorized and cuda enabled.
+'''
+
+
 import torch
 
 class mse():
+    '''
+    Computes the mean squared error and its gradient.
+    MSE is defined as (a-b)^2
+    '''
     def compute(X, y, w):
         return torch.mean(torch.sub(torch.sum(torch.mul(X, w), dim=1), y.double())**2).double()
 
@@ -10,6 +21,10 @@ class mse():
 
 
 class log_loss():
+    '''
+    Computes the logistic loss and its gradient.
+    Defined as log(1 + e(-ywx))
+    '''
     def compute(X, y, w):
         return torch.mean(torch.log(1. + torch.exp(-1. * torch.mul(y, torch.sum(torch.mul(X, w), dim=1))))).double()
 
@@ -24,39 +39,50 @@ class log_loss():
 
 
 class prox_loss():
+    '''
+    Computes the value for the proximal mapping used in the
+    experiments, along with its gradient.
+    '''
     def compute(X, y, w):
-        return (y.double()-w.double())**2
+        return 0.5*torch.norm(w.double() - y.double(), p=2)**2
 
     def grad(X, y, w):
-        return 2*(w.double()-y.double())
+        return (w.double()-y.double())
 
 
 class l1_regularizer():
+    '''
+    Computes the l1 regularization value for the weights
+    and its sub-gradient.
+    '''
     def compute(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         return torch.mul(torch.norm(w.double(), p=1), coeff['l1']).to(device)
 
     def grad(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        if torch.norm(w.double(), p=1) >= 0.0:
-            return torch.mul(torch.ones(w.size()).to(device),
-                             coeff['l1']).to(device)
-        else:
-            return torch.mul(torch.ones(w.size()).to(device),
-                             -coeff['l1']).to(device)
+        mask = (w > 0.0).int()
+        return (coeff['l1'] * mask - coeff['l1'] * (1 - mask)).double().to(device)
 
 
 class l2_regularizer():
+    '''
+    Computes the l2 regularization value for the weights
+    and its gradient.
+    '''
     def compute(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        return torch.mul(torch.norm(w.to(device), p=2).to(device).double(), 0.5*coeff['l2'])
+        return torch.mul((torch.norm(w.to(device), p=2)**2).to(device).double(), 0.5*coeff['l2'])
 
     def grad(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        return torch.tensor(coeff['l2']*w).double().to(device)
+        return (coeff['l2']*w).double().to(device)
 
 
 class elastic_net_regularizer():
+    '''
+    Computes the elastic regularization and its gradient
+    '''
     def compute(w, coeff):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         return torch.add(l1_regularizer.compute(w.to(device), coeff).double(),
@@ -69,6 +95,11 @@ class elastic_net_regularizer():
 
 
 class loss_plus_regulalizer():
+    '''
+    Computes the value for the objective function
+    (log_loss and elastic regularization in the experiments).
+    Different losses and regularizations can also be used.
+    '''
     def compute(X, y, w, coeff, loss, regularizer):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if regularizer is not None:
