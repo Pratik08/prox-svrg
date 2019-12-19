@@ -1,3 +1,9 @@
+'''
+Authors: Pratik Dubal, Shashwat Verma and Saurabh Sharma.
+
+All the code is vectorized and cuda enabled.
+'''
+
 import os
 import tqdm
 import torch
@@ -5,11 +11,16 @@ import numpy as np
 
 
 class Dataset:
+    '''
+    Base dataset class.
+    Maps inputs to X
+    Maps labels to y
+    '''
     def __init__(self, X, y, verbose=True):
         self.device = torch.device("cuda" if torch.cuda.is_available()
                                    else "cpu")
-        self.X = X.to(self.device)
-        self.y = y.to(self.device)
+        self.X = X.to(self.device).double()
+        self.y = y.to(self.device).double()
 
         if verbose:
             print("Number of rows in X: {}".format(self.X.size(0)))
